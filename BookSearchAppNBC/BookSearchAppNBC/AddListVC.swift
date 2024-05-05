@@ -11,29 +11,39 @@ import CoreData
 
 class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    // UI에 보여줄 책 목록 배열 생성
     var books: [Document] = []
     
+    // 책 목록을 보여줄 테이블뷰 컴포넌트 선언
     private var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(named: "AccentColor")
         setupTableView()
-        setupView()
         configureNavigationBar()
         loadBooks()
         
+        // 책이 추가되면 알림을 받을 옵저버
         NotificationCenter.default.addObserver(self, selector: #selector(loadBooks), name: NSNotification.Name("BookAdded"), object: nil)
     }
     
+    // 뷰컨 메모리 해제시 옵저버 해제
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
-    private func setupView() {
-        view.backgroundColor = UIColor(named: "AccentColor")
+    // MARK: 뷰 셋업
+    
+    // 네비게이션 영역
+    private func configureNavigationBar() {
+        let deleteButton = UIBarButtonItem(title: "전체 삭제", style: .plain, target: self, action: #selector(deleteAllBooks))
+        deleteButton.tintColor = .darkGray
         title = "ADD LIST"
+        navigationItem.rightBarButtonItem = deleteButton
     }
     
+    // 테이블뷰 설정
     private func setupTableView() {
         tableView = UITableView(frame: self.view.bounds, style: .plain)
         tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.identifier)
@@ -48,34 +58,12 @@ class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    private func configureNavigationBar() {
-        let deleteButton = UIBarButtonItem(title: "전체 삭제", style: .plain, target: self, action: #selector(deleteAllBooks))
-        deleteButton.tintColor = .darkGray
-        navigationItem.rightBarButtonItem = deleteButton
-    }
-    
-    @objc func deleteAllBooks() {
-        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
-            return
+    var coreDataContext: NSManagedObjectContext? {
+            return (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
         }
-        
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedBook.fetchRequest()
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        
-        do {
-            try context.execute(deleteRequest)
-            try context.save()
-            books.removeAll()
-            tableView.reloadData()
-        } catch let error as NSError {
-            print("전체 삭제: \(error), \(error.userInfo)")
-        }
-    }
     
     @objc func loadBooks() {
-        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
-            return
-        }
+        guard let context = coreDataContext else { return }
         
         let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
         do {
@@ -90,9 +78,7 @@ class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func deleteBook(at indexPath: IndexPath) {
-        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
-            return
-        }
+        guard let context = coreDataContext else { return }
         
         let bookToDelete = books[indexPath.row]
         if let coreDataBook = fetchCoreDataBook(with: bookToDelete.title ?? "") {
@@ -107,10 +93,25 @@ class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func fetchCoreDataBook(with title: String) -> SavedBook? {
-        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
-            return nil
+    @objc func deleteAllBooks() {
+        guard let context = coreDataContext else { return }
+        
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedBook.fetchRequest()
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+            books.removeAll()
+            tableView.reloadData()
+        } catch let error as NSError {
+            print("전체 삭제: \(error), \(error.userInfo)")
         }
+    }
+    
+    // title로 책 검색 데이터를
+    func fetchCoreDataBook(with title: String) -> SavedBook? {
+        guard let context = coreDataContext else { return nil }
         
         let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "title == %@", title)
@@ -123,6 +124,8 @@ class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    // MARK: 테이븗뷰 셀 설정
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return books.count
     }
