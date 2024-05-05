@@ -1,8 +1,8 @@
 //
-//  AddListVC.swift
-//  NBCBookStrore
+//  SceneDelegate.swift
+//  BookSearchAppNBC
 //
-//  Created by David Jang on 5/1/24.
+//  Created by David Jang on 5/5/24.
 //
 
 import UIKit

@@ -14,7 +14,6 @@
 		2A79D7A52BE723E0007BF6B1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2A79D7A42BE723E0007BF6B1 /* SnapKit */; };
 		2A79D7A72BE723E0007BF6B1 /* SnapKit-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 2A79D7A62BE723E0007BF6B1 /* SnapKit-Dynamic */; };
 		2A79D7AA2BE723F0007BF6B1 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2A79D7A92BE723F0007BF6B1 /* SDWebImage */; };
-		2A79D7AC2BE72416007BF6B1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7AB2BE72416007BF6B1 /* SceneDelegate.swift */; };
 		2A79D7B52BE72445007BF6B1 /* RecentlyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7AD2BE72445007BF6B1 /* RecentlyCollectionViewCell.swift */; };
 		2A79D7B62BE72445007BF6B1 /* BookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7AE2BE72445007BF6B1 /* BookModel.swift */; };
 		2A79D7B72BE72445007BF6B1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7AF2BE72445007BF6B1 /* TabBarController.swift */; };
@@ -26,6 +25,7 @@
 		2A79D7C02BE7246E007BF6B1 /* Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7BD2BE7246E007BF6B1 /* Formatter.swift */; };
 		2A79D7C12BE7246E007BF6B1 /* Numeric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7BE2BE7246E007BF6B1 /* Numeric.swift */; };
 		2A79D7C72BE72BD9007BF6B1 /* BookSearchAppNBC.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7C52BE72BD9007BF6B1 /* BookSearchAppNBC.xcdatamodeld */; };
+		2A79D7CB2BE73489007BF6B1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79D7CA2BE73489007BF6B1 /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +35,6 @@
 		2A79D7982BE72361007BF6B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A79D79B2BE72361007BF6B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2A79D79D2BE72361007BF6B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2A79D7AB2BE72416007BF6B1 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = ../../../NBCBookStrore/NBCBookStrore/NBCBookStrore/SceneDelegate.swift; sourceTree = "<group>"; };
 		2A79D7AD2BE72445007BF6B1 /* RecentlyCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentlyCollectionViewCell.swift; sourceTree = "<group>"; };
 		2A79D7AE2BE72445007BF6B1 /* BookModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookModel.swift; sourceTree = "<group>"; };
 		2A79D7AF2BE72445007BF6B1 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -47,6 +46,7 @@
 		2A79D7BD2BE7246E007BF6B1 /* Formatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
 		2A79D7BE2BE7246E007BF6B1 /* Numeric.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Numeric.swift; sourceTree = "<group>"; };
 		2A79D7C62BE72BD9007BF6B1 /* BookSearchAppNBC.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BookSearchAppNBC.xcdatamodel; sourceTree = "<group>"; };
+		2A79D7CA2BE73489007BF6B1 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				2A79D78C2BE7235F007BF6B1 /* AppDelegate.swift */,
-				2A79D7AB2BE72416007BF6B1 /* SceneDelegate.swift */,
+				2A79D7CA2BE73489007BF6B1 /* SceneDelegate.swift */,
 				2A79D7B02BE72445007BF6B1 /* AddListVC.swift */,
 				2A79D7B22BE72445007BF6B1 /* BookManager.swift */,
 				2A79D7AE2BE72445007BF6B1 /* BookModel.swift */,
@@ -197,9 +197,9 @@
 				2A79D7B52BE72445007BF6B1 /* RecentlyCollectionViewCell.swift in Sources */,
 				2A79D7BA2BE72445007BF6B1 /* BookManager.swift in Sources */,
 				2A79D7C12BE7246E007BF6B1 /* Numeric.swift in Sources */,
-				2A79D7AC2BE72416007BF6B1 /* SceneDelegate.swift in Sources */,
 				2A79D7C72BE72BD9007BF6B1 /* BookSearchAppNBC.xcdatamodeld in Sources */,
 				2A79D7C02BE7246E007BF6B1 /* Formatter.swift in Sources */,
+				2A79D7CB2BE73489007BF6B1 /* SceneDelegate.swift in Sources */,
 				2A79D7B82BE72445007BF6B1 /* AddListVC.swift in Sources */,
 				2A79D7BB2BE72445007BF6B1 /* SearchResultTableViewCell.swift in Sources */,
 				2A79D7B72BE72445007BF6B1 /* TabBarController.swift in Sources */,
