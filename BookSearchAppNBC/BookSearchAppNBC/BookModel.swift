@@ -44,16 +44,17 @@ struct Document: Codable {
         self.title = recentBook.title
         self.thumbnail = recentBook.thumbnailUrl
         self.authors = recentBook.authors?.components(separatedBy: ", ")
-        self.price = nil
+        self.price = Int(recentBook.price)  // 'price'를 Int로 변환
         self.contents = nil
         self.salePrice = nil
-        self.datetime = nil
+        self.datetime = recentBook.dateAdded?.description  // 'dateAdded'를 사용하여 'datetime' 설정
         self.isbn = nil
         self.publisher = nil
         self.translators = nil
         self.url = nil
-        self.status = nil
+        self.status = "정보 불러오기 실패"
     }
+
     
     // SavedBook entity
     init(from savedBook: SavedBook) {

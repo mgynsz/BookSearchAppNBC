@@ -12,6 +12,7 @@ import CoreData
 
 class DetailVC: UIViewController {
     
+    // 모델 뷰 상단 닫기 표시
     private let dragIndicatorView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.darkGray
@@ -19,6 +20,7 @@ class DetailVC: UIViewController {
         return view
     }()
     
+    // 책 제목
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 16)
@@ -27,6 +29,7 @@ class DetailVC: UIViewController {
         return label
     }()
     
+    // 작가
     private let authorLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
@@ -36,6 +39,7 @@ class DetailVC: UIViewController {
         return label
     }()
     
+    // 책 이미지
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -44,6 +48,7 @@ class DetailVC: UIViewController {
         return imageView
     }()
     
+    // 책 설명
     private let descriptionTextView: UITextView = {
         let textView = UITextView()
         textView.isEditable = false
@@ -63,6 +68,7 @@ class DetailVC: UIViewController {
         return textView
     }()
     
+    // 담기 버튼
     private let addButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("담기", for: .normal)
@@ -83,56 +89,7 @@ class DetailVC: UIViewController {
         addButton.addTarget(self, action: #selector(addBookToList), for: .touchUpInside)
     }
     
-    @objc func addBookToList() {
-        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext, let title = book?.title else {
-            return
-        }
-        
-        let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            if results.isEmpty {
-                let newBook = SavedBook(context: context)
-                newBook.title = title
-                newBook.authors = book?.authors?.joined(separator: ", ") ?? "작가 정보 없음"
-                newBook.thumbnailUrl = book?.thumbnail ?? ""
-                newBook.price = Int16(book?.price ?? 0) // 가격 정보 저장
-                try context.save()
-                NotificationCenter.default.post(name: NSNotification.Name("BookAdded"), object: nil)
-                dismiss(animated: true, completion: nil)
-            } else {
-                showAlert(title: "중복 책", message: "이 책은 이미 리스트에 있습니다.")
-            }
-        } catch {
-            print("Error addBookToList: \(error)")
-        }
-    }
-    
-    func fetchCoreDataBook(with title: String) -> SavedBook? {
-        guard let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext else {
-            return nil
-        }
-        
-        let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            return results.first
-        } catch {
-            return nil
-        }
-    }
-    
-    private func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
-        present(alert, animated: true)
-    }
-    
-    
+    // UI 레이아웃
     private func setupViews() {
         view.addSubview(titleLabel)
         view.addSubview(authorLabel)
@@ -178,9 +135,15 @@ class DetailVC: UIViewController {
         }
     }
     
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
+    }
+    
     private func configureView() {
         guard let book = book else { return }
-        
+        print("Configuring DetailVC with book: \(book)")
         titleLabel.text = book.title
         authorLabel.text = book.authors?.joined(separator: ", ")
         descriptionTextView.text = book.contents
@@ -191,6 +154,50 @@ class DetailVC: UIViewController {
         
         if let url = URL(string: book.thumbnail ?? "") {
             imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholderImage"))
+        }
+    }
+    
+    // CoreData 컨텍스트 가져오기
+    var coreDataContext: NSManagedObjectContext? {
+        return (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+    }
+    
+    // 책 coredata에 저장 메서드
+    @objc func addBookToList() {
+        guard let context = coreDataContext else { return }
+        
+        let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", book?.title ?? "")
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            if results.isEmpty {
+                let newBook = SavedBook(context: context)
+                newBook.title = book?.title
+                newBook.authors = book?.authors?.joined(separator: ", ")
+                newBook.thumbnailUrl = book?.thumbnail
+                newBook.price = Int16(book?.price ?? 0)
+                try context.save()
+                NotificationCenter.default.post(name: NSNotification.Name("BookAdded"), object: nil)
+                dismiss(animated: true, completion: nil)
+            } else {
+                showAlert(title: "중복 책", message: "이 책은 이미 리스트에 있습니다.")
+            }
+        } catch {
+            print("Error addBookToList: \(error)")
+        }
+    }
+    
+    // title로 coredata에서 책 찾기
+    func fetchCoreDataBook(with title: String, context: NSManagedObjectContext) -> SavedBook? {
+        let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            return results.first
+        } catch {
+            return nil
         }
     }
 }

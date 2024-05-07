@@ -58,61 +58,87 @@ class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    // MARK: 책 관리
+
+    // CoreData 컨텍스트 가져오기
     var coreDataContext: NSManagedObjectContext? {
-            return (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
-        }
+        return (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
+    }
     
+    // 책 목록을 로드하는 메서드
     @objc func loadBooks() {
         guard let context = coreDataContext else { return }
         
-        let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
-        do {
-            let results = try context.fetch(fetchRequest)
-            books = results.map { Document(from: $0) }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+        // 백그라운드 스레드
+        context.perform {
+            let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
+            
+            do {
+                let results = try context.fetch(fetchRequest)
+                let books = results.map { Document(from: $0) }
+                
+                // 메인 스레드 뷰 업데이트
+                DispatchQueue.main.async {
+                    self.books = books
+                    self.tableView.reloadData()
+                }
+            } catch {
+                
             }
-        } catch {
-            print("Error: \(error)")
         }
     }
     
+    // 책을 삭제하는 메서드
     func deleteBook(at indexPath: IndexPath) {
         guard let context = coreDataContext else { return }
         
-        let bookToDelete = books[indexPath.row]
-        if let coreDataBook = fetchCoreDataBook(with: bookToDelete.title ?? "") {
-            context.delete(coreDataBook)
-            do {
-                try context.save()
-                books.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
-            } catch let error as NSError {
-                print("Error : \(error), \(error.userInfo)")
+        // 백그라운드 스레드
+        context.perform {
+            let bookToDelete = self.books[indexPath.row]
+            if let coreDataBook = self.fetchCoreDataBook(with: bookToDelete.title ?? "", context: context) {
+                context.delete(coreDataBook)
+                
+                do {
+                    try context.save()
+                    
+                    // 메인 스레드 뷰 업데이트
+                    DispatchQueue.main.async {
+                        self.books.remove(at: indexPath.row)
+                        self.tableView.deleteRows(at: [indexPath], with: .fade)
+                    }
+                } catch {
+                    
+                }
             }
         }
     }
     
+    // 전채 삭제
     @objc func deleteAllBooks() {
         guard let context = coreDataContext else { return }
         
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedBook.fetchRequest()
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        
-        do {
-            try context.execute(deleteRequest)
-            try context.save()
-            books.removeAll()
-            tableView.reloadData()
-        } catch let error as NSError {
-            print("전체 삭제: \(error), \(error.userInfo)")
+        // 백그라운드 스레드
+        context.perform {
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedBook.fetchRequest()
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            
+            do {
+                try context.execute(deleteRequest)
+                try context.save()
+                
+                // 메인 스레드 뷰 업데이트
+                DispatchQueue.main.async {
+                    self.books.removeAll()
+                    self.tableView.reloadData()
+                }
+            } catch {
+                
+            }
         }
     }
     
-    // title로 책 검색 데이터를
-    func fetchCoreDataBook(with title: String) -> SavedBook? {
-        guard let context = coreDataContext else { return nil }
-        
+    // title로 coredata에서 책 찾기
+    func fetchCoreDataBook(with title: String, context: NSManagedObjectContext) -> SavedBook? {
         let fetchRequest: NSFetchRequest<SavedBook> = SavedBook.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "title == %@", title)
         
@@ -126,10 +152,12 @@ class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: 테이븗뷰 셀 설정
 
+    // 셀 갯수
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return books.count
     }
     
+    // 셀 구성
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultTableViewCell.identifier, for: indexPath) as? SearchResultTableViewCell else {
             fatalError("셀 가져오기 실패")
@@ -140,16 +168,19 @@ class AddListVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    // 셀 삭제 기능
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             deleteBook(at: indexPath)
         }
     }
     
+    // 테이블뷰 섹션 헤더
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "목록"
     }
     
+    // 테이블뷰 셀 높이
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 160
     }
