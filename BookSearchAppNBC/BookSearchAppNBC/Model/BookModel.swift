@@ -47,7 +47,7 @@ struct Document: Codable {
         self.price = Int(recentBook.price)  // 'price'를 Int로 변환
         self.contents = nil
 //        self.salePrice = nil
-        self.datetime = recentBook.dateAdded?.description  // 'dateAdded'를 사용하여 'datetime' 설정
+        self.datetime = recentBook.dateAdded?.description
 //        self.isbn = nil
 //        self.publisher = nil
 //        self.translators = nil

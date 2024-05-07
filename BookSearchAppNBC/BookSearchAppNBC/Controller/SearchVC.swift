@@ -150,7 +150,7 @@ class SearchVC: UIViewController, UINavigationControllerDelegate, UISearchBarDel
     
     // 초기 데이터 로드
     func loadInitialData() {
-        let initialQuery = "유시민"
+        let initialQuery = ""
         if !initialQuery.isEmpty {
             currentPage = 1
             isLastPage = false
