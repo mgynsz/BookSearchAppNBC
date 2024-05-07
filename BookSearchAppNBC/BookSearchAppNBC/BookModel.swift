@@ -23,20 +23,20 @@ struct Document: Codable {
     let authors: [String]?
     let contents: String?
     let price: Int?
-    let salePrice: Int?
+//    let salePrice: Int?
     let thumbnail: String?
     let title: String?
     let datetime: String?
-    let isbn: String?
-    let publisher: String?
-    let translators: [String]?
-    let url: String?
-    let status: String?
+//    let isbn: String?
+//    let publisher: String?
+//    let translators: [String]?
+//    let url: String?
+//    let status: String?
 
     enum CodingKeys: String, CodingKey {
         case authors, contents, price, thumbnail, title
-        case salePrice = "sale_price"
-        case datetime, isbn, publisher, translators, url, status
+//        case salePrice = "sale_price"
+        case datetime//, isbn, publisher, translators, url, status
     }
     
     // RecentBook entity
@@ -46,13 +46,13 @@ struct Document: Codable {
         self.authors = recentBook.authors?.components(separatedBy: ", ")
         self.price = Int(recentBook.price)  // 'price'를 Int로 변환
         self.contents = nil
-        self.salePrice = nil
+//        self.salePrice = nil
         self.datetime = recentBook.dateAdded?.description  // 'dateAdded'를 사용하여 'datetime' 설정
-        self.isbn = nil
-        self.publisher = nil
-        self.translators = nil
-        self.url = nil
-        self.status = "정보 불러오기 실패"
+//        self.isbn = nil
+//        self.publisher = nil
+//        self.translators = nil
+//        self.url = nil
+//        self.status = "정보 불러오기 실패"
     }
 
     
@@ -63,13 +63,13 @@ struct Document: Codable {
         self.authors = savedBook.authors?.components(separatedBy: ", ")
         self.price = Int(savedBook.price)
         self.contents = nil
-        self.salePrice = nil
+//        self.salePrice = nil
         self.datetime = nil
-        self.isbn = nil
-        self.publisher = nil
-        self.translators = nil
-        self.url = nil
-        self.status = nil
+//        self.isbn = nil
+//        self.publisher = nil
+//        self.translators = nil
+//        self.url = nil
+//        self.status = nil
     }
 }
 

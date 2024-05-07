@@ -143,13 +143,13 @@ class DetailVC: UIViewController {
     
     private func configureView() {
         guard let book = book else { return }
-        print("Configuring DetailVC with book: \(book)")
+        
         titleLabel.text = book.title
         authorLabel.text = book.authors?.joined(separator: ", ")
         descriptionTextView.text = book.contents
         // 가격 정보 설정 확인
         if let price = book.price {
-            print("Price: \(price)")  // 콘솔에 가격 정보 출력
+            print("Price: \(price)")
         }
         
         if let url = URL(string: book.thumbnail ?? "") {

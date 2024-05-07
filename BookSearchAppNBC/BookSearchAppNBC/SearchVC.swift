@@ -261,7 +261,7 @@ class SearchVC: UIViewController, UINavigationControllerDelegate, UISearchBarDel
                     }
                 }
             } catch {
-                print("Failed to fetch book details: \(error)")
+                
             }
         }
     }
@@ -319,7 +319,6 @@ extension SearchVC: UITableViewDataSource, UITableViewDelegate {
     // 셀 선택 시 로직
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedBook = books[indexPath.row]
-        print("Selected book from tableView: \(selectedBook)")
         updateOrSaveRecentBook(selectedBook)
         presentDetailViewController(for: selectedBook)
     }
